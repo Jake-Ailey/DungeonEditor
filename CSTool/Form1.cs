@@ -12,7 +12,7 @@ namespace CSTool
 {
     public partial class Form1 : Form
     {
-        PictureBox[,] pictureBox = new PictureBox[16, 16];
+       public NewWindow newWindow = new NewWindow();
 
         public Form1()
         {
@@ -31,7 +31,6 @@ namespace CSTool
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewWindow newWindow = new NewWindow();
 
             newWindow.Show();
         }
@@ -63,6 +62,11 @@ namespace CSTool
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
+        }
+
+        private void toolStripComboBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

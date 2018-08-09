@@ -9,3 +9,14 @@ C:\Users\s181205\Desktop\C# Tool\CSTool\CSTool\obj\Debug\CSTool.csproj.CoreCompi
 C:\Users\s181205\Desktop\C# Tool\CSTool\CSTool\obj\Debug\CSTool.exe
 C:\Users\s181205\Desktop\C# Tool\CSTool\CSTool\obj\Debug\CSTool.pdb
 C:\Users\s181205\Desktop\C# Tool\CSTool\CSTool\obj\Debug\CSTool.NewWindow.resources
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\bin\Debug\CSTool.exe.config
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\bin\Debug\CSTool.exe
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\bin\Debug\CSTool.pdb
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.csprojResolveAssemblyReference.cache
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.Form1.resources
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.NewWindow.resources
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.Properties.Resources.resources
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.csproj.GenerateResource.Cache
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.csproj.CoreCompileInputs.cache
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.exe
+C:\Users\s181205\Desktop\Dungeon Editor\CSTool\obj\Debug\CSTool.pdb
