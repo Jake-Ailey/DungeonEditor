@@ -16,9 +16,13 @@ namespace CSTool
         public int gridWidth;
         public int cellSize;
 
-        public NewWindow()
+        Form1 window;
+
+        public NewWindow(Form1 form)
         {
             InitializeComponent();
+
+            window = form;
         }
 
         private void NewWindow_Load(object sender, EventArgs e)
@@ -62,6 +66,7 @@ namespace CSTool
             if (textBox4.TextLength == 0)
             {
                 gridHeight = 0;
+                panel2.Refresh();
                 return;
             }
 
@@ -90,6 +95,7 @@ namespace CSTool
             if (textBox6.TextLength == 0)
             {
                 cellSize = 0;
+                panel2.Refresh();
                 return;
             }
 
@@ -116,7 +122,9 @@ namespace CSTool
 
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
-            //Live preview of how big your grid will be
+            //Live preview of how big your grid will be.
+            //This is not the actual grid that will be drawn on, it is simply to act as a visual representation of what you're
+            //creating before the fact
 
             Graphics g = e.Graphics;
             Pen p = new Pen(Color.Black);
@@ -134,6 +142,25 @@ namespace CSTool
             }
             //Draws an extra line on the bottom to close off the grid
             g.DrawLine(p, 0, gridHeight * cellSize, gridWidth * cellSize, gridHeight * cellSize);
-        }       
+
+            if (gridHeight == 0 || gridWidth == 0 || cellSize == 0)
+                g.Clear(Color.WhiteSmoke);
+        }
+
+        //CREATE Button
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Error message in case the user leaves one of the sizing paramaters blank
+            if (gridHeight == 0 || gridWidth == 0 || cellSize == 0)
+            {
+                MessageBox.Show("Error: cannot create a grid with unspecified paramaters", "Error",
+                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            window.createGrid(gridHeight, gridWidth, cellSize);
+
+            Close();
+        }
     }
 }
