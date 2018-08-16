@@ -253,6 +253,7 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureBox1_DragDrop);
             this.pictureBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.pictureBox1_DragDrop);
+            this.pictureBox1.DragLeave += new System.EventHandler(this.pictureBox1_DragLeave);
             // 
             // panel2
             // 
@@ -263,7 +264,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(806, 522);
             this.panel2.TabIndex = 2;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // panel3
             // 

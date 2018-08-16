@@ -15,19 +15,19 @@ namespace CSTool
         public NewWindow newWindow;
         //Tile set
         public PictureBox[,] pGrid;
+        public int gridHeight;
+        public int gridWidth;
         //Resource Tiles
-        public PictureBox[] imageDir = new PictureBox[10];
-       
+        public PictureBox[] imageDir = new PictureBox[10];       
 
-        private int pTileNum;
-
+        private int tileNum; //Keeps track of how many total cells we have in the grid
 
         public Form1()
         {
             InitializeComponent();
             newWindow = new NewWindow(this);
 
-            //Initilising the picture boxes into an array for later use
+            //Initilising the picture boxes into an array for later use and easier accessibility 
             imageDir[0] = pictureBox1;
             imageDir[1] = pictureBox2;
             imageDir[2] = pictureBox3;
@@ -38,7 +38,6 @@ namespace CSTool
             imageDir[7] = pictureBox8;
             imageDir[8] = pictureBox9;
             imageDir[9] = pictureBox10;
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -76,15 +75,14 @@ namespace CSTool
 
         }
 
+        //Hopefully we print the piccy out someday?
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-
         }
 
         //Picture panel - stores reference to all level tiles
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            PictureBox[,] pTile;
         }
 
         private void toolStripComboBox1_Click(object sender, EventArgs e)
@@ -92,19 +90,20 @@ namespace CSTool
 
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-        }
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
+        //private void panel2_Paint(object sender, PaintEventArgs e)
+        //{
+        //    if(gridHeight != 0 && gridWidth != 0)
+        //    {
+        //        pGrid[gridHeight, gridWidth].Show();
+        //    }
+        //}
 
-        }
-
-        //Margin, Dock, Backcolour, Location, Size, 
         //GRID CREATION, gets called within NewWindow.CreateButton
         public void createGrid(int gridH, int gridW, int cellSize)
         {
             pGrid = new PictureBox[gridH, gridW]; //Initialising the grid array
+            gridHeight = gridH;
+            gridWidth = gridW;
 
             for (int row = 0; row < gridH; row++)
             {
@@ -116,10 +115,14 @@ namespace CSTool
                     pGrid[row, col].Dock = DockStyle.None;
                     pGrid[row, col].BackColor = Color.White;
                     pGrid[row, col].BorderStyle = BorderStyle.FixedSingle;
-                    pGrid[row, col].Location = new Point(row, col);
-                    pGrid[row, col].Show();
+                    pGrid[row, col].Size = new Size(cellSize, cellSize);
+                    pGrid[row, col].Location = new Point(row * cellSize, col * cellSize);
+                    panel2.Controls.Add(pGrid[row, col]);
+ //                   pGrid[row, col].Show();
+                    tileNum++; //Keeping count of how many cells we have
                 }
             }
+           panel2.Refresh();
         }
 
         //IMPORT Button, for importing an image into the resources window
@@ -152,6 +155,12 @@ namespace CSTool
 
         //Called when the drag and drop is actually completed 
         private void pictureBox1_DragDrop(object sender, DragEventArgs e)
+        {
+
+        }
+
+        //Called when the user drags something out of the picturebox
+        private void pictureBox1_DragLeave(object sender, EventArgs e)
         {
 
         }
