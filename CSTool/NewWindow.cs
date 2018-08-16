@@ -42,6 +42,11 @@ namespace CSTool
                 return;
             }
 
+            //Keeping the maximum grid size at 25 * 25, or 625 objects
+            //If you try and write past 25, it will rewrite it back to 25 for you
+            if(Int32.Parse(textBox3.Text) > 25)
+                textBox3.Text = "25";            
+
             gridHeight = Int32.Parse(textBox3.Text);
 
             if (gridWidth != 0 && cellSize != 0)
@@ -70,6 +75,11 @@ namespace CSTool
                 return;
             }
 
+            //Keeping the maximum grid size at 25 * 25, or 625 objects
+            //If you try and write past 25, it will rewrite it back to 25 for you
+            if (Int32.Parse(textBox4.Text) > 25)
+                textBox4.Text = "25";
+
             gridWidth = Int32.Parse(textBox4.Text);
 
             if(gridHeight != 0 && cellSize != 0)
@@ -94,6 +104,7 @@ namespace CSTool
 
             if (textBox6.TextLength == 0)
             {
+                //Undraws the grid when a box is blank
                 cellSize = 0;
                 panel2.Refresh();
                 return;

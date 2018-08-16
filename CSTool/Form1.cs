@@ -6,21 +6,31 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CSTool
 {
     public partial class Form1 : Form
     {
+        //Window where you customise your grid
         public NewWindow newWindow;
+
         //Tile set
         public PictureBox[,] pGrid;
         public int gridHeight;
         public int gridWidth;
-        //Resource Tiles
-        public PictureBox[] imageDir = new PictureBox[10];       
 
-        private int tileNum; //Keeps track of how many total cells we have in the grid
+        //Resource Tiles
+        public PictureBox[] imageDir = new PictureBox[10];
+
+        //Keeps track of how many total cells we have in the grid
+        private int tileNum;
+
+        bool vData;
+        string path;
+        Image image;
+        Thread imageThread;
 
         public Form1()
         {
@@ -118,7 +128,6 @@ namespace CSTool
                     pGrid[row, col].Size = new Size(cellSize, cellSize);
                     pGrid[row, col].Location = new Point(row * cellSize, col * cellSize);
                     panel2.Controls.Add(pGrid[row, col]);
- //                   pGrid[row, col].Show();
                     tileNum++; //Keeping count of how many cells we have
                 }
             }
@@ -147,16 +156,68 @@ namespace CSTool
             }
         }
 
+         private void saveImage()
+        {
+            // throw new NotImplementedException();
+            image = new Bitmap(path);
+        }
+
+        private bool GetImage(out string fileName, DragEventArgs e)
+        {
+           // throw new NotImplementedException();
+           bool retrn = false;
+           fileName = string.Empty;
+           if((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
+            {
+                Array data = ((IDataObject)e.Data).GetData("FileDrop") as Array;
+                if(data != null)
+                {
+                    if((data.Length == 1) && (data.GetValue(0)) is string)
+                    {
+                        fileName = ((string[])data)[0];
+                        string extension = System.IO.Path.GetExtension(fileName).ToLower();
+                        if((extension == ".jpg") || extension == ".jpeg" || extension == ".png" || extension == ".bmp")
+                        {
+                            retrn = true;
+                        }
+                    }
+                }
+            }
+            return retrn;
+        }
+ 
+        //EDIT THIS FUNCTION WITH THE LINK ON GOOGLE DRIVE
         //Drag and drop into pictureBox1 FROM an outside source. Triggers when an object is dragged into the controll's bounds
         private void pictureBox1_DragEnter(object sender, DragEventArgs e)
         {
-            
-        }
+            string fileName;
+            vData = GetImage(out fileName, e);
+
+            if(vData)
+            {
+                path = fileName;
+                imageThread = new Thread(new ThreadStart(saveImage));
+                imageThread.Start();
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }       
 
         //Called when the drag and drop is actually completed 
         private void pictureBox1_DragDrop(object sender, DragEventArgs e)
         {
-
+            if (vData)
+            {
+                while(imageThread.IsAlive)
+                {
+                    Application.DoEvents();
+                    Thread.Sleep(0);
+                }
+                pictureBox1.Image = image;
+            }
         }
 
         //Called when the user drags something out of the picturebox
