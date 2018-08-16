@@ -159,6 +159,7 @@ namespace CSTool
             }
 
             window.createGrid(gridHeight, gridWidth, cellSize);
+            window.Refresh();
 
             Close();
         }
