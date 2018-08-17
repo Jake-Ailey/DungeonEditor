@@ -27,10 +27,14 @@ namespace CSTool
         //Keeps track of how many total cells we have in the grid
         private int tileNum;
 
+        //VARIABLES FOR DRAG AND DROP FUNCTIONALITY
         bool vData;
         string path;
         Image image;
         Thread imageThread;
+
+
+        public delegate void AssignImageDlgt();
 
         public Form1()
         {
@@ -48,6 +52,8 @@ namespace CSTool
             imageDir[7] = pictureBox8;
             imageDir[8] = pictureBox9;
             imageDir[9] = pictureBox10;
+
+            AllowDrop = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -138,7 +144,8 @@ namespace CSTool
         private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "Image Files(*.jpg; *.jpeg; *.png)|*.jpg; *.jpeg; *.png";
+            //Setting the image types that the program will look for and accept
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.bmp)|*.jpg; *.jpeg; *.png; *.bmp";
             
             if(open.ShowDialog() == DialogResult.OK)
             {
@@ -158,15 +165,14 @@ namespace CSTool
 
          private void saveImage()
         {
-            // throw new NotImplementedException();
             image = new Bitmap(path);
         }
 
         private bool GetImage(out string fileName, DragEventArgs e)
         {
-           // throw new NotImplementedException();
            bool retrn = false;
            fileName = string.Empty;
+
            if((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
             {
                 Array data = ((IDataObject)e.Data).GetData("FileDrop") as Array;
@@ -185,14 +191,29 @@ namespace CSTool
             }
             return retrn;
         }
- 
-        //EDIT THIS FUNCTION WITH THE LINK ON GOOGLE DRIVE
-        //Drag and drop into pictureBox1 FROM an outside source. Triggers when an object is dragged into the controll's bounds
-        private void pictureBox1_DragEnter(object sender, DragEventArgs e)
+
+        //ISSUE CORRECTION:
+        //We ran into the issue where we had all the drag and drop allowances set in the picturebox, yet the actual allowances
+        //were being blocked by the overlaying form1, so now we need to rewrite it in the form
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            if(vData)
+            {
+                while(imageThread.IsAlive)
+                {
+                    Application.DoEvents();
+                    Thread.Sleep(0);
+
+                }
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox1.Image = image;
+            }
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
         {
             string fileName;
             vData = GetImage(out fileName, e);
-
             if(vData)
             {
                 path = fileName;
@@ -204,26 +225,14 @@ namespace CSTool
             {
                 e.Effect = DragDropEffects.None;
             }
-        }       
-
-        //Called when the drag and drop is actually completed 
-        private void pictureBox1_DragDrop(object sender, DragEventArgs e)
-        {
-            if (vData)
-            {
-                while(imageThread.IsAlive)
-                {
-                    Application.DoEvents();
-                    Thread.Sleep(0);
-                }
-                pictureBox1.Image = image;
-            }
         }
 
-        //Called when the user drags something out of the picturebox
-        private void pictureBox1_DragLeave(object sender, EventArgs e)
+        private void Form1_DragLeave(object sender, EventArgs e)
         {
+        }
 
+        private void Form1_DragOver(object sender, DragEventArgs e)
+        {            
         }
     }
 }
