@@ -54,8 +54,6 @@ namespace CSTool
             imageDir[8] = pictureBox9;
             imageDir[9] = pictureBox10;
 
-            
-
             AllowDrop = true;
             panel1.AllowDrop = true;
         }
@@ -258,7 +256,7 @@ namespace CSTool
 
         private void button2_Click(object sender, EventArgs e)
         {
-                      
+         
         }
 
         private void panel3_Paint(object sender, PaintEventArgs e)
@@ -266,7 +264,7 @@ namespace CSTool
             Graphics g = e.Graphics;
             Point p = new Point(400, 400);
 
-            g.DrawImage(thumbnail, p);
+            g.DrawImage(imageDir[1].Image, p);
         }
     }
 }
