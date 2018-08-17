@@ -31,6 +31,7 @@ namespace CSTool
         bool vData;
         string path;
         Image image;
+        Image thumbnail;
         Thread imageThread;
 
 
@@ -53,7 +54,10 @@ namespace CSTool
             imageDir[8] = pictureBox9;
             imageDir[9] = pictureBox10;
 
+            
+
             AllowDrop = true;
+            panel1.AllowDrop = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -205,8 +209,15 @@ namespace CSTool
                     Thread.Sleep(0);
 
                 }
-                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                pictureBox1.Image = image;
+                for (int i = 0; i < 10; i++)
+                {
+                    if (imageDir[i].Image == null)
+                    {
+                        imageDir[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                        imageDir[i].Image = image;
+                        return;
+                    }
+                }
             }
         }
 
@@ -214,7 +225,7 @@ namespace CSTool
         {
             string fileName;
             vData = GetImage(out fileName, e);
-            if(vData)
+            if (vData)
             {
                 path = fileName;
                 imageThread = new Thread(new ThreadStart(saveImage));
@@ -227,12 +238,35 @@ namespace CSTool
             }
         }
 
-        private void Form1_DragLeave(object sender, EventArgs e)
+        protected bool ThumbnailCallbackAbort()
         {
+            return false;
         }
 
-        private void Form1_DragOver(object sender, DragEventArgs e)
-        {            
+        //Drag leave, for when the user drags an image out of the picture boxes and into the grid
+        private void pictureBox1_DragLeave(object sender, EventArgs e)
+        {
+            //We can only drag out a picture if one exists
+            if (pictureBox1.Image != null)
+            {
+
+                //Returns a thumbnail of the image;
+                //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
+               thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+                      
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Point p = new Point(400, 400);
+
+            g.DrawImage(thumbnail, p);
         }
     }
 }
