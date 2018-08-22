@@ -123,9 +123,9 @@ namespace CSTool
             gridHeight = gridH;
             gridWidth = gridW;
 
-            for (int row = 0; row < gridH; row++)
+            for (int row = 0; row < gridW; row++)
             {
-                for (int col = 0; col < gridW; col++)
+                for (int col = 0; col < gridH; col++)
                 {
                     //Welp, it compiles. Progress
                     pGrid[row, col] = new PictureBox();
@@ -164,6 +164,8 @@ namespace CSTool
                 }
             }
         }
+
+       
 
          private void saveImage()
         {
@@ -247,7 +249,6 @@ namespace CSTool
             //We can only drag out a picture if one exists
             if (pictureBox1.Image != null)
             {
-
                 //Returns a thumbnail of the image;
                 //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
                thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
@@ -265,6 +266,37 @@ namespace CSTool
             Point p = new Point(400, 400);
 
             g.DrawImage(imageDir[1].Image, p);
+        }
+
+        //Function to allow us to drag images from the Image repository into the picture box grid
+        private void pGrid_DragEnter(object sender, DragEventArgs e)
+        {
+            string fileName;
+            vData = GetImage(out fileName, e); //Checking that the image is valid and storing the filename
+            Point mouse = new Point();
+            Point gPoint = new Point(); //Point to store the current grid cell's position
+            mouse = MousePosition; //Gets the mouse position;
+            if (vData)   //Only run the code if the data is valid - error checking
+            {
+                for(int row = 0; row < gridWidth; row++)
+                {
+                    for(int col = 0; col < gridHeight; col++)
+                    {
+                        //pGrid[row, col]
+                    }
+                }
+            }
+
+            //CHECKLIST:
+            // - Check cell x and y position;
+            // - Image stretch into cell;
+            // - Image thumbnail (not quite necessary)
+        }
+
+        //Drop iteration of the grid's drag and drop functionality
+        private void pGrid_DragDrop(object sender, DragEventArgs e)
+        {
+
         }
     }
 }
