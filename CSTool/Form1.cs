@@ -20,6 +20,7 @@ namespace CSTool
         public PictureBox[,] pGrid;
         public int gridHeight;
         public int gridWidth;
+        public int cellSize;
 
         //Resource Tiles
         public PictureBox[] imageDir = new PictureBox[10];
@@ -108,20 +109,13 @@ namespace CSTool
 
         }
 
-        //private void panel2_Paint(object sender, PaintEventArgs e)
-        //{
-        //    if(gridHeight != 0 && gridWidth != 0)
-        //    {
-        //        pGrid[gridHeight, gridWidth].Show();
-        //    }
-        //}
-
         //GRID CREATION, gets called within NewWindow.CreateButton
-        public void createGrid(int gridH, int gridW, int cellSize)
+        public void createGrid(int gridH, int gridW, int cellsize)
         {
             pGrid = new PictureBox[gridH, gridW]; //Initialising the grid array
             gridHeight = gridH;
             gridWidth = gridW;
+            cellSize = cellsize;
 
             for (int row = 0; row < gridW; row++)
             {
@@ -163,9 +157,7 @@ namespace CSTool
                     }
                 }
             }
-        }
-
-       
+        }       
 
          private void saveImage()
         {
@@ -196,14 +188,28 @@ namespace CSTool
             return retrn;
         }
 
-        //ISSUE CORRECTION:
-        //We ran into the issue where we had all the drag and drop allowances set in the picturebox, yet the actual allowances
-        //were being blocked by the overlaying form1, so now we need to rewrite it in the form
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        public void DragEnterImport(DragEventArgs e)
         {
-            if(vData)
+            string fileName;
+            vData = GetImage(out fileName, e);
+            if (vData)
             {
-                while(imageThread.IsAlive)
+                path = fileName;
+                imageThread = new Thread(new ThreadStart(saveImage));
+                imageThread.Start();
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        public void DragDropImport()
+        {
+            if (vData)
+            {
+                while (imageThread.IsAlive)
                 {
                     Application.DoEvents();
                     Thread.Sleep(0);
@@ -221,20 +227,60 @@ namespace CSTool
             }
         }
 
+        //ISSUE CORRECTION:
+        //We ran into the issue where we had all the drag and drop allowances set in the picturebox, yet the actual allowances
+        //were being blocked by the overlaying form1, so now we need to rewrite it in the form
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
-            string fileName;
-            vData = GetImage(out fileName, e);
-            if (vData)
+            DragEnterImport(e);
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            DragDropImport();
+        }       
+
+        //Allows us the drag into Panel 2, which is where the level grid is stored
+        private void panel2_DragEnter(object sender, DragEventArgs e)
+        {
+            DragEnterImport(e);
+        }
+
+        private void panel2_DragDrop(object sender, DragEventArgs e)
+        {
+            //If the grid has not been created, we treat this action as a simple image import for the resource panel.
+            if (pGrid == null)
             {
-                path = fileName;
-                imageThread = new Thread(new ThreadStart(saveImage));
-                imageThread.Start();
-                e.Effect = DragDropEffects.Copy;
+                DragDropImport();
             }
-            else
+
+            //If the grid HAS been created, then we try and import the image into the grid
+            else if (pGrid != null)
             {
-                e.Effect = DragDropEffects.None;
+                string fileName;
+                vData = GetImage(out fileName, e); //Checking that the image is valid and storing the filename
+                Point mouse = new Point();
+                Point gPoint = new Point(5, 5); //Point to store the current grid cell's position
+
+                mouse = MousePosition; //Gets the mouse position;
+                if (vData)   //Only run the code if the data is valid - error checking
+                {
+                    for (int row = 0; row < gridWidth; row++)
+                    {
+                        for (int col = 0; col < gridHeight; col++)
+                        {
+                            //Need PointToClient so that we get the position relative to the control, not the screen
+                            //Check if mouse is hovering over a cell, by testing it's location with reference to it's cellsize
+                            //if ((MousePosition.X >= pGrid[row, col].Location.X && MousePosition.Y >= pGrid[row, col].Location.Y)
+                            //&& ((MousePosition.X + cellSize) <= (pGrid[row, col].Location.X + cellSize)
+                            //&& (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))              
+                            
+                            pGrid[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
+                            pGrid[row, col].Image = image;                            
+                        }
+                    }
+                    panel2.Refresh();
+                }
             }
         }
 
@@ -252,6 +298,7 @@ namespace CSTool
                 //Returns a thumbnail of the image;
                 //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
                thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
+               
             }
         }
 
@@ -260,43 +307,51 @@ namespace CSTool
          
         }
 
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Point p = new Point(400, 400);
-
-            g.DrawImage(imageDir[1].Image, p);
-        }
-
         //Function to allow us to drag images from the Image repository into the picture box grid
-        private void pGrid_DragEnter(object sender, DragEventArgs e)
-        {
-            string fileName;
-            vData = GetImage(out fileName, e); //Checking that the image is valid and storing the filename
-            Point mouse = new Point();
-            Point gPoint = new Point(); //Point to store the current grid cell's position
-            mouse = MousePosition; //Gets the mouse position;
-            if (vData)   //Only run the code if the data is valid - error checking
-            {
-                for(int row = 0; row < gridWidth; row++)
-                {
-                    for(int col = 0; col < gridHeight; col++)
-                    {
-                        //pGrid[row, col]
-                    }
-                }
-            }
-
-            //CHECKLIST:
-            // - Check cell x and y position;
-            // - Image stretch into cell;
-            // - Image thumbnail (not quite necessary)
-        }
+        //private void pGrid_DragEnter(object sender, DragEventArgs e)
+        //{
+        //    DragEnterImport(e);
+        //    //CHECKLIST:
+        //    // - Image stretch into cell;
+        //    // - Image thumbnail (not quite necessary)
+        //}
 
         //Drop iteration of the grid's drag and drop functionality
         private void pGrid_DragDrop(object sender, DragEventArgs e)
         {
+            string fileName;
+            vData = GetImage(out fileName, e); //Checking that the image is valid and storing the filename
+            Point mouse = new Point();
+            Point gPoint = new Point(5, 5); //Point to store the current grid cell's position
 
+            mouse = MousePosition; //Gets the mouse position;
+            if (vData)   //Only run the code if the data is valid - error checking
+            {
+                for (int row = 0; row < gridWidth; row++)
+                {
+                    for (int col = 0; col < gridHeight; col++)
+                    {
+                        //Need PointToClient so that we get the position relative to the control, not the screen
+                        //Check if mouse is hovering over a cell, by testing it's location with reference to it's cellsize
+                        if ((MousePosition.X >= pGrid[row, col].Location.X && MousePosition.Y >= pGrid[row, col].Location.Y)
+                        && ((MousePosition.X + cellSize) <= (pGrid[row, col].Location.X + cellSize)
+                        && (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))
+                        {
+                            pGrid[row, col].Image = image;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void panel1_DragEnter(object sender, DragEventArgs e)
+        {
+            DragEnterImport(e);
+        }
+
+        private void panel1_DragDrop(object sender, DragEventArgs e)
+        {
+            DragDropImport();
         }
     }
 }

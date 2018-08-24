@@ -160,6 +160,8 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 497);
             this.panel1.TabIndex = 1;
+            this.panel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel1_DragDrop);
+            this.panel1.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel1_DragEnter);
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // pictureBox10
@@ -263,6 +265,8 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(806, 522);
             this.panel2.TabIndex = 2;
+            this.panel2.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2_DragDrop);
+            this.panel2.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2_DragEnter);
             // 
             // button1
             // 
