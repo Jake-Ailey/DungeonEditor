@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CSTool
 {
@@ -76,17 +77,21 @@ namespace CSTool
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            //INSERT BINARY LOADING HERE
+            //Look into the BinaryReader class on Microsoft Docs
         }
 
+        //Do we really need to save buttons? Not really! Am I gonna get rid of one? Absolutely not!
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
+        //THIS IS WHERE WE GON TRY AND SAVE THESE FILES WOOT
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            //INSERT BINARY SAVING HERE
+            //Look into the BinaryWriter class on MS Docs
         }
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
