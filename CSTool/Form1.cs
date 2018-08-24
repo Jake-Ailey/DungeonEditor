@@ -348,7 +348,6 @@ namespace CSTool
                 }
             }
         }
-
         private void panel1_DragEnter(object sender, DragEventArgs e)
         {
             DragEnterImport(e);
