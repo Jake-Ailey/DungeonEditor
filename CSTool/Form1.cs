@@ -36,6 +36,9 @@ namespace CSTool
         Image thumbnail;
         Thread imageThread;
 
+ 
+
+
 
         public delegate void AssignImageDlgt();
 
@@ -73,12 +76,43 @@ namespace CSTool
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             newWindow.Show();
+
         }
 
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        //THIS IS WHERE WE GON TRY AND SAVE THESE FILES WOOT
+        public void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //INSERT BINARY SAVING HERE
+            //Look into the BinaryWriter class on MS Docs
+            
+
+            SaveFileDialog save = new SaveFileDialog();             
+                                                                    
+            save.Filter = "Save Files(*.edtr)|*.edtr";              
+            save.Title = "Save your Level File";                    
+            save.ShowDialog();                                      
+                                                                    
+            //If the file name is not empty, continue with saving   
+            if (save.FileName != "")                                
+            {                                                       
+                FileStream fs = (FileStream)save.OpenFile();
+
+                //Write to save here
+               
+                
+
+                fs.Close();                                         
+            }                                                       
+
+
+
+        }
+        public void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //INSERT BINARY LOADING HERE
             //Look into the BinaryReader class on Microsoft Docs
+
+            
         }
 
         //Do we really need to save buttons? Not really! Am I gonna get rid of one? Absolutely not!
@@ -87,12 +121,7 @@ namespace CSTool
 
         }
 
-        //THIS IS WHERE WE GON TRY AND SAVE THESE FILES WOOT
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //INSERT BINARY SAVING HERE
-            //Look into the BinaryWriter class on MS Docs
-        }
+        
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
