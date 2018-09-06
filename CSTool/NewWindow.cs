@@ -17,11 +17,10 @@ namespace CSTool
         public int cellSize;
 
         Form1 window;
-
+                
         public NewWindow(Form1 form)
         {
             InitializeComponent();
-
             window = form;
         }
 

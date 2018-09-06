@@ -23,6 +23,13 @@ namespace CSTool
         public int gridWidth;
         public int cellSize;
 
+        public string[,] tempGrid;
+
+        //Info to save to computer for later loading functionality
+        public string[] gridFP; //gridFilePath
+        public string[] resourceFP = new string[10]; //Won't ever be more than 10 source pics
+        public int[] gridInfo = new int[3]; //gridHeight, gridWidth, cellSize. In that order.
+
         //Resource Tiles
         public PictureBox[] imageDir = new PictureBox[10];
 
@@ -35,10 +42,6 @@ namespace CSTool
         Image image;
         Image thumbnail;
         Thread imageThread;
-
- 
-
-
 
         public delegate void AssignImageDlgt();
 
@@ -76,52 +79,69 @@ namespace CSTool
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             newWindow.Show();
-
         }
 
         //THIS IS WHERE WE GON TRY AND SAVE THESE FILES WOOT
         public void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //INSERT BINARY SAVING HERE
-            //Look into the BinaryWriter class on MS Docs
+            //Creates a an array with enough space to save the entire grid
+            gridFP = new string[pGrid.Length];
             
-
             SaveFileDialog save = new SaveFileDialog();             
                                                                     
-            save.Filter = "Save Files(*.edtr)|*.edtr";              
+            save.Filter = "Save Files(*.xml)|*.xml";              
             save.Title = "Save your Level File";                    
             save.ShowDialog();                                      
                                                                     
             //If the file name is not empty, continue with saving   
             if (save.FileName != "")                                
             {                                                       
-                FileStream fs = (FileStream)save.OpenFile();
+               // FileStream fs = (FileStream)save.OpenFile();
+                //Stream stream = SaveFileDialog.OpenFile();
+                Stream fs = save.OpenFile();
+                StreamWriter sw = new StreamWriter(fs);
 
-                //Write to save here
-               
-                
+                //Writing the grid info first, as this will be the first to be read
+                sw.WriteLine(gridHeight);
+                sw.WriteLine(gridWidth);
+                sw.WriteLine(cellSize);
 
+                //Saving all filepaths within the grid
+                for (int i = 0; i < gridHeight; i++)
+                {
+                    for(int j = 0; j < gridWidth; j++)
+                    {
+                        //Writing our 1D array into a text file
+                        sw.WriteLine(pGrid[i, j].ImageLocation.ToString());
+                    }
+                }
                 fs.Close();                                         
-            }                                                       
-
-
-
+            }
         }
+
         public void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //INSERT BINARY LOADING HERE
-            //Look into the BinaryReader class on Microsoft Docs
 
-            
+
+            OpenFileDialog load = new OpenFileDialog();
+
+            load.Filter = "Load Files(*.xml)|*.xml";
+            load.Title = "Load your Level File";
+            load.ShowDialog();
+
+            Stream fs = load.OpenFile();
+            StreamReader sr = new StreamReader(fs);
+
+            //We've written all our data into their own lines, now we just nead to read that in one at a time.
+           // gridHeight = sr.Read();
+
         }
 
         //Do we really need to save buttons? Not really! Am I gonna get rid of one? Absolutely not!
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-
-        
+        }        
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -310,7 +330,8 @@ namespace CSTool
                             //&& (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))              
                             
                             pGrid[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
-                            pGrid[row, col].Image = image;                            
+                            pGrid[row, col].Image = image;
+                            pGrid[row, col].ImageLocation = fileName;
                         }
                     }
                     panel2.Refresh();
