@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
 
 namespace CSTool
 {
@@ -111,7 +112,14 @@ namespace CSTool
                 {
                     for(int j = 0; j < gridWidth; j++)
                     {
+                        //If the cell doesn't have an image in it, write null to the .xml file. We'll use this to check whether to import an image or not
+                        if(pGrid[i,j].Image == null)
+                        {
+                            sw.WriteLine("null");
+                        }
+
                         //Writing our 1D array into a text file
+                        else
                         sw.WriteLine(pGrid[i, j].ImageLocation.ToString());
                     }
                 }
@@ -121,8 +129,6 @@ namespace CSTool
 
         public void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-
             OpenFileDialog load = new OpenFileDialog();
 
             load.Filter = "Load Files(*.xml)|*.xml";
@@ -132,9 +138,23 @@ namespace CSTool
             Stream fs = load.OpenFile();
             StreamReader sr = new StreamReader(fs);
 
-            //We've written all our data into their own lines, now we just nead to read that in one at a time.
-           // gridHeight = sr.Read();
+            //When we saved, the first things we wrote to the .xml was the grid info, so here we read it back in the same order we wrote it.
+            //Int32.Parse() is a good way to convert a string into a function
+            gridHeight = Int32.Parse(sr.ReadLine());
+            gridWidth = Int32.Parse(sr.ReadLine());
+            cellSize = Int32.Parse(sr.ReadLine());
 
+            //Creating the grid before we can import to it
+            createGrid(gridHeight, gridWidth, cellSize);
+
+            for(int i = 0; i < gridHeight; i++)
+            {
+                for(int j = 0; j < gridWidth; j++)
+                {
+                    pGrid[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
+                    pGrid[i, j].ImageLocation = sr.ReadLine();
+                }
+            }
         }
 
         //Do we really need to save buttons? Not really! Am I gonna get rid of one? Absolutely not!
@@ -188,6 +208,16 @@ namespace CSTool
                 }
             }
            panel2.Refresh();
+        }
+
+        public void createGrid(bool ha)
+        {
+            if(ha)
+            {
+                createGrid(1, 1, 500);
+
+                pGrid[0, 0].Image = Properties.Resources.HaGrid;
+            }
         }
 
         //IMPORT Button, for importing an image into the resources window
@@ -406,6 +436,11 @@ namespace CSTool
         private void panel1_DragDrop(object sender, DragEventArgs e)
         {
             DragDropImport();
+        }
+
+        private void canvasSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            createGrid(true);
         }
     }
 }
