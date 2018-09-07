@@ -171,7 +171,19 @@ namespace CSTool
             window.createGrid(gridHeight, gridWidth, cellSize);
             window.Refresh();
 
-            Close();
+            Hide();
+        }
+
+        
+    }
+
+    public class DerivedClass : Form1
+    {
+        Form1 window;
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            window.destroyGrid();
         }
     }
 }

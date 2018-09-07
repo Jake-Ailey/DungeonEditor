@@ -82,7 +82,6 @@ namespace CSTool
             newWindow.Show();
         }
 
-        //THIS IS WHERE WE GON TRY AND SAVE THESE FILES WOOT
         public void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Creates a an array with enough space to save the entire grid
@@ -91,39 +90,49 @@ namespace CSTool
             SaveFileDialog save = new SaveFileDialog();             
                                                                     
             save.Filter = "Save Files(*.xml)|*.xml";              
-            save.Title = "Save your Level File";                    
-            save.ShowDialog();                                      
-                                                                    
-            //If the file name is not empty, continue with saving   
-            if (save.FileName != "")                                
-            {                                                       
-               // FileStream fs = (FileStream)save.OpenFile();
-                //Stream stream = SaveFileDialog.OpenFile();
-                Stream fs = save.OpenFile();
-                StreamWriter sw = new StreamWriter(fs);
+            save.Title = "Save your Level File"; 
+            
+            if(save.ShowDialog() == DialogResult.OK)
+            {
 
-                //Writing the grid info first, as this will be the first to be read
-                sw.WriteLine(gridHeight);
-                sw.WriteLine(gridWidth);
-                sw.WriteLine(cellSize);
-
-                //Saving all filepaths within the grid
-                for (int i = 0; i < gridHeight; i++)
+                //If the file name is not empty, continue with saving   
+                if (save.FileName != "")
                 {
-                    for(int j = 0; j < gridWidth; j++)
-                    {
-                        //If the cell doesn't have an image in it, write null to the .xml file. We'll use this to check whether to import an image or not
-                        if(pGrid[i,j].Image == null)
-                        {
-                            sw.WriteLine("null");
-                        }
 
-                        //Writing our 1D array into a text file
-                        else
-                        sw.WriteLine(pGrid[i, j].ImageLocation.ToString());
+                    //Rather than writing down the same image 25 times, simply write it once but increment a variable for 
+                    //how many times that image has been found. Then grab that variable and load it back tha tmany times
+
+
+                    // FileStream fs = (FileStream)save.OpenFile();
+                    //Stream stream = SaveFileDialog.OpenFile();
+                    Stream fs = save.OpenFile();
+                    StreamWriter sw = new StreamWriter(fs);
+
+                    int count = gridHeight * gridWidth;
+
+                    //Writing the grid info first, as this will be the first to be read
+                    sw.WriteLine(gridHeight);
+                    sw.WriteLine(gridWidth);
+                    sw.WriteLine(cellSize);
+
+                    //Saving all filepaths within the grid
+                    for (int i = 0; i < gridHeight; i++)
+                    {
+                        for (int j = 0; j < gridWidth; j++)
+                        {
+                            //If the cell doesn't have an image in it, write null to the .xml file. We'll use this to check whether to import an image or not
+                            if (pGrid[i, j].Image == null)
+                            {
+                                sw.WriteLine("null");
+                            }
+
+                            //Writing our 1D array into a text file
+                            else
+                                sw.WriteLine(pGrid[i, j].ImageLocation.ToString());
+                        }
                     }
+                    sw.Close();
                 }
-                fs.Close();                                         
             }
         }
 
@@ -133,42 +142,41 @@ namespace CSTool
 
             load.Filter = "Load Files(*.xml)|*.xml";
             load.Title = "Load your Level File";
-            load.ShowDialog();
 
-            Stream fs = load.OpenFile();
-            StreamReader sr = new StreamReader(fs);
-
-            //When we saved, the first things we wrote to the .xml was the grid info, so here we read it back in the same order we wrote it.
-            //Int32.Parse() is a good way to convert a string into a function
-            gridHeight = Int32.Parse(sr.ReadLine());
-            gridWidth = Int32.Parse(sr.ReadLine());
-            cellSize = Int32.Parse(sr.ReadLine());
-
-            //Creating the grid before we can import to it
-            createGrid(gridHeight, gridWidth, cellSize);
-
-            for(int i = 0; i < gridHeight; i++)
+            if (load.ShowDialog() == DialogResult.OK)
             {
-                for(int j = 0; j < gridWidth; j++)
+
+                Stream fs = load.OpenFile();
+                StreamReader sr = new StreamReader(fs);
+
+                //When we saved, the first things we wrote to the .xml was the grid info, so here we read it back in the same order we wrote it.
+                //Int32.Parse() is a good way to convert a string into a function
+                gridHeight = Int32.Parse(sr.ReadLine());
+                gridWidth = Int32.Parse(sr.ReadLine());
+                cellSize = Int32.Parse(sr.ReadLine());
+
+                //Creating the grid before we can import to it
+                createGrid(gridHeight, gridWidth, cellSize);
+
+                for (int i = 0; i < gridHeight; i++)
                 {
-                    pGrid[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
-                    pGrid[i, j].ImageLocation = sr.ReadLine();
+                    for (int j = 0; j < gridWidth; j++)
+                    {
+                        pGrid[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
+                        pGrid[i, j].ImageLocation = sr.ReadLine().ToString(); ;
+                    }
                 }
+
+
+                sr.Close();
             }
         }
 
-        //Do we really need to save buttons? Not really! Am I gonna get rid of one? Absolutely not!
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }        
-
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            destroyGrid();
         }
 
-        //Hopefully we print the piccy out someday?
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
         }
@@ -218,6 +226,20 @@ namespace CSTool
 
                 pGrid[0, 0].Image = Properties.Resources.HaGrid;
             }
+        }
+
+        public void destroyGrid()
+        {
+            //Removing all the images from the grid
+            for(int i = 0; i < gridHeight; i++)
+            {
+                for(int j = 0; j < gridWidth; j++)
+                {
+                    pGrid[i, j].Image = null;
+                    panel2.Controls.Clear();
+                }                
+            }
+            
         }
 
         //IMPORT Button, for importing an image into the resources window
@@ -382,8 +404,7 @@ namespace CSTool
             {
                 //Returns a thumbnail of the image;
                 //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
-               thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
-               
+               thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);               
             }
         }
 
@@ -441,6 +462,11 @@ namespace CSTool
         private void canvasSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createGrid(true);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

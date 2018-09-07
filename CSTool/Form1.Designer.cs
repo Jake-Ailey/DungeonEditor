@@ -129,7 +129,7 @@
             // canvasSizeToolStripMenuItem
             // 
             this.canvasSizeToolStripMenuItem.Name = "canvasSizeToolStripMenuItem";
-            this.canvasSizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.canvasSizeToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.canvasSizeToolStripMenuItem.Text = "&Wizard";
             this.canvasSizeToolStripMenuItem.Click += new System.EventHandler(this.canvasSizeToolStripMenuItem_Click);
             // 
@@ -245,6 +245,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(100, 100);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             this.pictureBox1.DragLeave += new System.EventHandler(this.pictureBox1_DragLeave);
             // 
             // panel2
