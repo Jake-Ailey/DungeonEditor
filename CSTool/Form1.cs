@@ -86,29 +86,20 @@ namespace CSTool
         {
             //Creates a an array with enough space to save the entire grid
             gridFP = new string[pGrid.Length];
-            
-            SaveFileDialog save = new SaveFileDialog();             
-                                                                    
-            save.Filter = "Save Files(*.xml)|*.xml";              
-            save.Title = "Save your Level File"; 
-            
-            if(save.ShowDialog() == DialogResult.OK)
+
+            SaveFileDialog save = new SaveFileDialog();
+
+            save.Filter = "Save Files(*.xml)|*.xml";
+            save.Title = "Save your Level File";
+
+            if (save.ShowDialog() == DialogResult.OK)
             {
 
                 //If the file name is not empty, continue with saving   
                 if (save.FileName != "")
                 {
-
-                    //Rather than writing down the same image 25 times, simply write it once but increment a variable for 
-                    //how many times that image has been found. Then grab that variable and load it back tha tmany times
-
-
-                    // FileStream fs = (FileStream)save.OpenFile();
-                    //Stream stream = SaveFileDialog.OpenFile();
                     Stream fs = save.OpenFile();
                     StreamWriter sw = new StreamWriter(fs);
-
-                    int count = gridHeight * gridWidth;
 
                     //Writing the grid info first, as this will be the first to be read
                     sw.WriteLine(gridHeight);
@@ -191,13 +182,18 @@ namespace CSTool
 
         }
 
+        //----------------------------------------------------------------------------------||
+        // MULTIPLE CONSTRUCTORS
         //GRID CREATION, gets called within NewWindow.CreateButton
+        //----------------------------------------------------------------------------------||
         public void createGrid(int gridH, int gridW, int cellsize)
         {
             pGrid = new PictureBox[gridH, gridW]; //Initialising the grid array
             gridHeight = gridH;
             gridWidth = gridW;
             cellSize = cellsize;
+
+            destroyGrid();
 
             for (int row = 0; row < gridW; row++)
             {
@@ -215,31 +211,64 @@ namespace CSTool
                     tileNum++; //Keeping count of how many cells we have
                 }
             }
-           panel2.Refresh();
+            panel2.Refresh();
         }
 
         public void createGrid(bool ha)
         {
-            if(ha)
-            {
+            
+                destroyGrid();
                 createGrid(1, 1, 500);
 
+            if (ha)
+                new Hagrid().drawImage(pGrid);
+
+            else
+                new Dirgah().drawImage(pGrid);
+        }
+        //----------------------------------------------------------------------------------||
+
+        //------------------------------------------------------------------||
+        // Very simple inheritence with polymorphism
+        //------------------------------------------------------------------||
+        public class ImageDrawer 
+        {
+            public virtual void drawImage(PictureBox[,] pGrid)
+            {
+                pGrid[0, 0].Image = null;
+            }
+        }
+
+        public class Hagrid : ImageDrawer
+        {
+            public override void drawImage(PictureBox[,] pGrid)
+            {           
                 pGrid[0, 0].Image = Properties.Resources.HaGrid;
             }
         }
 
+        public class Dirgah : ImageDrawer
+        {
+            public override void drawImage(PictureBox[,] pGrid)
+            {
+                pGrid[0, 0].SizeMode = PictureBoxSizeMode.StretchImage;
+                pGrid[0, 0].Image = Properties.Resources.Swagrid;
+            }
+        }
+        //------------------------------------------------------------------||
+
         public void destroyGrid()
         {
             //Removing all the images from the grid
-            for(int i = 0; i < gridHeight; i++)
+            for (int i = 0; i < gridHeight; i++)
             {
-                for(int j = 0; j < gridWidth; j++)
+                for (int j = 0; j < gridWidth; j++)
                 {
-                    pGrid[i, j].Image = null;
+                    if (pGrid[i, j] != null)
+                        pGrid[i, j].Image = null;
                     panel2.Controls.Clear();
-                }                
+                }
             }
-            
         }
 
         //IMPORT Button, for importing an image into the resources window
@@ -248,13 +277,13 @@ namespace CSTool
             OpenFileDialog open = new OpenFileDialog();
             //Setting the image types that the program will look for and accept
             open.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.bmp)|*.jpg; *.jpeg; *.png; *.bmp";
-            
-            if(open.ShowDialog() == DialogResult.OK)
+
+            if (open.ShowDialog() == DialogResult.OK)
             {
                 //Iterating through all text boxes to find an empty one
                 for (int i = 0; i < 10; i++)
                 {
-                    if(imageDir[i].Image == null)
+                    if (imageDir[i].Image == null)
                     {
                         //Stretches the image so that it fits in the 100 x 100 box
                         imageDir[i].SizeMode = PictureBoxSizeMode.StretchImage;
@@ -263,28 +292,28 @@ namespace CSTool
                     }
                 }
             }
-        }       
+        }
 
-         private void saveImage()
+        private void saveImage()
         {
             image = new Bitmap(path);
         }
 
         private bool GetImage(out string fileName, DragEventArgs e)
         {
-           bool retrn = false;
-           fileName = string.Empty;
+            bool retrn = false;
+            fileName = string.Empty;
 
-           if((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
+            if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
             {
                 Array data = ((IDataObject)e.Data).GetData("FileDrop") as Array;
-                if(data != null)
+                if (data != null)
                 {
-                    if((data.Length == 1) && (data.GetValue(0)) is string)
+                    if ((data.Length == 1) && (data.GetValue(0)) is string)
                     {
                         fileName = ((string[])data)[0];
                         string extension = System.IO.Path.GetExtension(fileName).ToLower();
-                        if((extension == ".jpg") || extension == ".jpeg" || extension == ".png" || extension == ".bmp")
+                        if ((extension == ".jpg") || extension == ".jpeg" || extension == ".png" || extension == ".bmp")
                         {
                             retrn = true;
                         }
@@ -344,7 +373,7 @@ namespace CSTool
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
             DragDropImport();
-        }       
+        }
 
         //Allows us the drag into Panel 2, which is where the level grid is stored
         private void panel2_DragEnter(object sender, DragEventArgs e)
@@ -380,7 +409,7 @@ namespace CSTool
                             //if ((MousePosition.X >= pGrid[row, col].Location.X && MousePosition.Y >= pGrid[row, col].Location.Y)
                             //&& ((MousePosition.X + cellSize) <= (pGrid[row, col].Location.X + cellSize)
                             //&& (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))              
-                            
+
                             pGrid[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
                             pGrid[row, col].Image = image;
                             pGrid[row, col].ImageLocation = fileName;
@@ -396,21 +425,11 @@ namespace CSTool
             return false;
         }
 
-        //Drag leave, for when the user drags an image out of the picture boxes and into the grid
-        private void pictureBox1_DragLeave(object sender, EventArgs e)
-        {
-            //We can only drag out a picture if one exists
-            if (pictureBox1.Image != null)
-            {
-                //Returns a thumbnail of the image;
-                //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
-               thumbnail =  image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);               
-            }
-        }
+
 
         private void button2_Click(object sender, EventArgs e)
         {
-         
+
         }
 
         //Function to allow us to drag images from the Image repository into the picture box grid
@@ -461,12 +480,38 @@ namespace CSTool
 
         private void canvasSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            createGrid(true);
+            if (pGrid == null)
+                createGrid(true);
+
+            else
+                createGrid(false);
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+
+        //--------------------------------------------------------------------------------------------------------|
+        //--------------------------------------------------------------------------------------------------------|
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-
+            pictureBox1_DragLeave(sender, e);
         }
+
+        //Drag leave, for when the user drags an image out of the picture boxes and into the grid
+        private void pictureBox1_DragLeave(object sender, EventArgs e)
+        {
+            //We can only drag out a picture if one exists
+            if (pictureBox1.Image != null)
+            {
+                //Returns a thumbnail of the image;
+                //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
+                thumbnail = pictureBox1.Image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
+            }
+        }
+        //--------------------------------------------------------------------------------------------------------|
+
+
+
+        //4. You need to demonstrate inheritance with polymorphism: have a base class and derived class,
+        //then make a virtual function which is called on the derived class using a base class reference.
+
     }
 }

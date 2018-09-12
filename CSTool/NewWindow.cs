@@ -174,16 +174,11 @@ namespace CSTool
             Hide();
         }
 
-        
-    }
-
-    public class DerivedClass : Form1
-    {
-        Form1 window;
-
-        private void button3_Click(object sender, EventArgs e)
+        private void NewWindow_DragLeave(object sender, EventArgs e)
         {
-            window.destroyGrid();
+            
         }
+
+        
     }
 }

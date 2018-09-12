@@ -36,10 +36,10 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -128,6 +128,15 @@
             this.panel1.Size = new System.Drawing.Size(879, 82);
             this.panel1.TabIndex = 6;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(790, 14);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 8;
+            this.button3.Text = "Clear Grid";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
             // textBox6
             // 
             this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -161,15 +170,6 @@
             this.panel2.TabIndex = 7;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(790, 14);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "Clear Grid";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
             // NewWindow
             // 
             this.AllowDrop = true;
@@ -184,6 +184,7 @@
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "Project Creation";
             this.Load += new System.EventHandler(this.NewWindow_Load);
+            this.DragLeave += new System.EventHandler(this.NewWindow_DragLeave);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

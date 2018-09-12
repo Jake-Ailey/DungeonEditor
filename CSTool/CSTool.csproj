@@ -88,9 +88,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\HaGrid.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Swagrid.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
