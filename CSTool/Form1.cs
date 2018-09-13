@@ -220,11 +220,19 @@ namespace CSTool
                 destroyGrid();
                 createGrid(1, 1, 500);
 
+
+            //Revised Polymorphism
             if (ha)
-                new Hagrid().drawImage(pGrid);
+            {
+                ImageDrawer H = new Hagrid();
+                H.drawImage(pGrid);
+            }
 
             else
-                new Dirgah().drawImage(pGrid);
+            {
+                ImageDrawer S = new Swagrid();
+                S.drawImage(pGrid);
+            }
         }
         //----------------------------------------------------------------------------------||
 
@@ -247,7 +255,7 @@ namespace CSTool
             }
         }
 
-        public class Dirgah : ImageDrawer
+        public class Swagrid : ImageDrawer
         {
             public override void drawImage(PictureBox[,] pGrid)
             {
