@@ -41,8 +41,8 @@ namespace CSTool
         bool vData;
         string path;
         Image image;
-        Image thumbnail;
         Thread imageThread;
+        Image highlightImage;
 
         public delegate void AssignImageDlgt();
 
@@ -440,15 +440,6 @@ namespace CSTool
 
         }
 
-        //Function to allow us to drag images from the Image repository into the picture box grid
-        //private void pGrid_DragEnter(object sender, DragEventArgs e)
-        //{
-        //    DragEnterImport(e);
-        //    //CHECKLIST:
-        //    // - Image stretch into cell;
-        //    // - Image thumbnail (not quite necessary)
-        //}
-
         //Drop iteration of the grid's drag and drop functionality
         private void pGrid_DragDrop(object sender, DragEventArgs e)
         {
@@ -496,30 +487,117 @@ namespace CSTool
         }
 
 
-        //--------------------------------------------------------------------------------------------------------|
-        //--------------------------------------------------------------------------------------------------------|
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        //If an image is highlighted when a grid cell is clicked, that grid cell now becomes the highlighted image
+        private void pGrid_Click(object sender, EventArgs e)
         {
-            pictureBox1_DragLeave(sender, e);
+
+            //Everytime we click into the panel, get the current mouse position
+            float mouseX = Cursor.Position.X;
+            float mouseY = Cursor.Position.Y;
+
+            if (highlightImage != null)
+            {
+                for (int i = 0; i < gridHeight; i++)
+                {
+                    for (int j = 0; j < gridWidth; j++)
+                    {
+                        if ((mouseX >= pGrid[i, j].Location.X) && (mouseX <= pGrid[i, j].Location.X + cellSize)
+                            && (mouseY >= pGrid[i, j].Location.Y) && (mouseY <= pGrid[i, j].Location.Y + cellSize)) //Getting the bounds of the cell
+                        {
+                            pGrid[i, j].Image = highlightImage;
+                        }
+                    }
+                }
+            }
         }
 
-        //Drag leave, for when the user drags an image out of the picture boxes and into the grid
-        private void pictureBox1_DragLeave(object sender, EventArgs e)
+        #region Picturebox Click
+        //--------------------------------------------------------------------------------------------------------|
+        //  Grid Painting
+        //--------------------------------------------------------------------------------------------------------|
+
+        //Have a "pointer" that points to whichever box the user has clicked on and highlight it, then when a grid cell is clicked on, change that 
+        //picture to be the same one as the highlighted box
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
-            //We can only drag out a picture if one exists
-            if (pictureBox1.Image != null)
+            if(pictureBox1.Image != null)
             {
-                //Returns a thumbnail of the image;
-                //You ever look at a word long enough and it starts to not look like a word anymore? Thumbnail.
-                thumbnail = pictureBox1.Image.GetThumbnailImage(100, 100, ThumbnailCallbackAbort, IntPtr.Zero);
+                highlightImage = pictureBox1.Image;
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if(pictureBox2.Image != null)
+            {
+                highlightImage = pictureBox2.Image;
+            }
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            if (pictureBox3.Image != null)
+            {
+                highlightImage = pictureBox3.Image;
+            }
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            if (pictureBox4.Image != null)
+            {
+                highlightImage = pictureBox4.Image;
+            }
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            if (pictureBox5.Image != null)
+            {
+                highlightImage = pictureBox5.Image;
+            }
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            if (pictureBox6.Image != null)
+            {
+                highlightImage = pictureBox6.Image;
+            }
+        }
+
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+            if (pictureBox7.Image != null)
+            {
+                highlightImage = pictureBox7.Image;
+            }
+        }
+
+        private void pictureBox8_Click(object sender, EventArgs e)
+        {
+            if (pictureBox8.Image != null)
+            {
+                highlightImage = pictureBox8.Image;
+            }
+        }
+
+        private void pictureBox9_Click(object sender, EventArgs e)
+        {
+            if (pictureBox9.Image != null)
+            {
+                highlightImage = pictureBox9.Image;
+            }
+        }
+
+        private void pictureBox10_Click(object sender, EventArgs e)
+        {
+            if (pictureBox10.Image != null)
+            {
+                highlightImage = pictureBox10.Image;
             }
         }
         //--------------------------------------------------------------------------------------------------------|
-
-
-
-        //4. You need to demonstrate inheritance with polymorphism: have a base class and derived class,
-        //then make a virtual function which is called on the derived class using a base class reference.
-
+        #endregion        
     }
 }
