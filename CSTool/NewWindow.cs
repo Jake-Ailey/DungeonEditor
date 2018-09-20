@@ -172,13 +172,6 @@ namespace CSTool
             window.Refresh();
 
             Hide();
-        }
-
-        private void NewWindow_DragLeave(object sender, EventArgs e)
-        {
-            
-        }
-
-        
+        }        
     }
 }

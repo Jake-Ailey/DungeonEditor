@@ -19,7 +19,7 @@ namespace CSTool
         public NewWindow newWindow;
 
         //Tile set
-        public PictureBox[,] pGrid;
+        public PictureBox[,] pGrid = new PictureBox[,] { }; //Creation of an empty Grid
         public int gridHeight;
         public int gridWidth;
         public int cellSize;
@@ -208,6 +208,7 @@ namespace CSTool
                     pGrid[row, col].Size = new Size(cellSize, cellSize);
                     pGrid[row, col].Location = new Point(row * cellSize, col * cellSize);
                     panel2.Controls.Add(pGrid[row, col]);
+                    pGrid[row, col].Click += new EventHandler(this.pGrid_Click); //Creation of the Event handler for our new grid, now they can be clicked on
                     tileNum++; //Keeping count of how many cells we have
                 }
             }
@@ -504,7 +505,10 @@ namespace CSTool
                         if ((mouseX >= pGrid[i, j].Location.X) && (mouseX <= pGrid[i, j].Location.X + cellSize)
                             && (mouseY >= pGrid[i, j].Location.Y) && (mouseY <= pGrid[i, j].Location.Y + cellSize)) //Getting the bounds of the cell
                         {
+                            pGrid[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
                             pGrid[i, j].Image = highlightImage;
+                            pGrid[i, j].ImageLocation = path;
+                            break;
                         }
                     }
                 }
@@ -523,6 +527,7 @@ namespace CSTool
             if(pictureBox1.Image != null)
             {
                 highlightImage = pictureBox1.Image;
+                path = pictureBox1.ImageLocation;
             }
         }
 
