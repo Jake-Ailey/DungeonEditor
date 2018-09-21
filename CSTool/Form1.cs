@@ -47,9 +47,6 @@ namespace CSTool
 
         public delegate void AssignImageDlgt();
 
-        //----------------------------------------------||
-        // MULTIPLE CONSTRUCTORS
-        //----------------------------------------------||
         public Form1()
         {
             InitializeComponent();
@@ -70,27 +67,6 @@ namespace CSTool
             AllowDrop = true;
             panel1.AllowDrop = true;
         }
-
-        //public Form1(bool condition)
-        //{
-        //    if(condition == true)
-        //    createGrid(true);
-
-        //    imageDir[0] = pictureBox1;
-        //    imageDir[1] = pictureBox2;
-        //    imageDir[2] = pictureBox3;
-        //    imageDir[3] = pictureBox4;
-        //    imageDir[4] = pictureBox5;
-        //    imageDir[5] = pictureBox6;
-        //    imageDir[6] = pictureBox7;
-        //    imageDir[7] = pictureBox8;
-        //    imageDir[8] = pictureBox9;
-        //    imageDir[9] = pictureBox10;
-
-        //    AllowDrop = true;
-        //    panel1.AllowDrop = true;
-        //}
-        //----------------------------------------------||
 
         private void Form1_Load(object sender, EventArgs e)
         {
