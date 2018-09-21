@@ -20,6 +20,7 @@ namespace CSTool
 
         //Tile set
         public PictureBox[,] pGrid = new PictureBox[,] { }; //Creation of an empty Grid
+        public bool[,] pGridCheck;
         public int gridHeight;
         public int gridWidth;
         public int cellSize;
@@ -46,6 +47,9 @@ namespace CSTool
 
         public delegate void AssignImageDlgt();
 
+        //----------------------------------------------||
+        // MULTIPLE CONSTRUCTORS
+        //----------------------------------------------||
         public Form1()
         {
             InitializeComponent();
@@ -66,6 +70,27 @@ namespace CSTool
             AllowDrop = true;
             panel1.AllowDrop = true;
         }
+
+        //public Form1(bool condition)
+        //{
+        //    if(condition == true)
+        //    createGrid(true);
+
+        //    imageDir[0] = pictureBox1;
+        //    imageDir[1] = pictureBox2;
+        //    imageDir[2] = pictureBox3;
+        //    imageDir[3] = pictureBox4;
+        //    imageDir[4] = pictureBox5;
+        //    imageDir[5] = pictureBox6;
+        //    imageDir[6] = pictureBox7;
+        //    imageDir[7] = pictureBox8;
+        //    imageDir[8] = pictureBox9;
+        //    imageDir[9] = pictureBox10;
+
+        //    AllowDrop = true;
+        //    panel1.AllowDrop = true;
+        //}
+        //----------------------------------------------||
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -183,12 +208,12 @@ namespace CSTool
         }
 
         //----------------------------------------------------------------------------------||
-        // MULTIPLE CONSTRUCTORS
         //GRID CREATION, gets called within NewWindow.CreateButton
         //----------------------------------------------------------------------------------||
         public void createGrid(int gridH, int gridW, int cellsize)
         {
             pGrid = new PictureBox[gridH, gridW]; //Initialising the grid array
+            pGridCheck = new bool[gridH, gridW];  //Initialising the bool array
             gridHeight = gridH;
             gridWidth = gridW;
             cellSize = cellsize;
@@ -297,6 +322,7 @@ namespace CSTool
                         //Stretches the image so that it fits in the 100 x 100 box
                         imageDir[i].SizeMode = PictureBoxSizeMode.StretchImage;
                         imageDir[i].Image = new Bitmap(open.FileName);
+                        imageDir[i].ImageLocation = open.FileName;
                         break;
                     }
                 }
@@ -413,12 +439,6 @@ namespace CSTool
                     {
                         for (int col = 0; col < gridHeight; col++)
                         {
-                            //Need PointToClient so that we get the position relative to the control, not the screen
-                            //Check if mouse is hovering over a cell, by testing it's location with reference to it's cellsize
-                            //if ((MousePosition.X >= pGrid[row, col].Location.X && MousePosition.Y >= pGrid[row, col].Location.Y)
-                            //&& ((MousePosition.X + cellSize) <= (pGrid[row, col].Location.X + cellSize)
-                            //&& (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))              
-
                             pGrid[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
                             pGrid[row, col].Image = image;
                             pGrid[row, col].ImageLocation = fileName;
@@ -433,8 +453,6 @@ namespace CSTool
         {
             return false;
         }
-
-
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -463,11 +481,13 @@ namespace CSTool
                         && (MousePosition.Y + cellSize) <= (pGrid[row, col].Location.Y + cellSize)))
                         {
                             pGrid[row, col].Image = image;
+                            pGrid[row, col].ImageLocation = fileName;
                         }
                     }
                 }
             }
         }
+
         private void panel1_DragEnter(object sender, DragEventArgs e)
         {
             DragEnterImport(e);
@@ -491,7 +511,6 @@ namespace CSTool
         //If an image is highlighted when a grid cell is clicked, that grid cell now becomes the highlighted image
         private void pGrid_Click(object sender, EventArgs e)
         {
-
             //Everytime we click into the panel, get the current mouse position
             float mouseX = Cursor.Position.X;
             float mouseY = Cursor.Position.Y;
@@ -501,9 +520,8 @@ namespace CSTool
                 for (int i = 0; i < gridHeight; i++)
                 {
                     for (int j = 0; j < gridWidth; j++)
-                    {
-                        if ((mouseX >= pGrid[i, j].Location.X) && (mouseX <= pGrid[i, j].Location.X + cellSize)
-                            && (mouseY >= pGrid[i, j].Location.Y) && (mouseY <= pGrid[i, j].Location.Y + cellSize)) //Getting the bounds of the cell
+                    {  
+                        if (pGrid[i, j] == sender)
                         {
                             pGrid[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
                             pGrid[i, j].Image = highlightImage;
@@ -514,7 +532,6 @@ namespace CSTool
                 }
             }
         }
-
         #region Picturebox Click
         //--------------------------------------------------------------------------------------------------------|
         //  Grid Painting
@@ -526,6 +543,7 @@ namespace CSTool
         {
             if(pictureBox1.Image != null)
             {
+
                 highlightImage = pictureBox1.Image;
                 path = pictureBox1.ImageLocation;
             }
@@ -536,6 +554,8 @@ namespace CSTool
             if(pictureBox2.Image != null)
             {
                 highlightImage = pictureBox2.Image;
+                path = pictureBox2.ImageLocation;
+
             }
         }
 
@@ -544,6 +564,8 @@ namespace CSTool
             if (pictureBox3.Image != null)
             {
                 highlightImage = pictureBox3.Image;
+                path = pictureBox3.ImageLocation;
+
             }
         }
 
@@ -552,6 +574,8 @@ namespace CSTool
             if (pictureBox4.Image != null)
             {
                 highlightImage = pictureBox4.Image;
+                path = pictureBox4.ImageLocation;
+
             }
         }
 
@@ -560,6 +584,8 @@ namespace CSTool
             if (pictureBox5.Image != null)
             {
                 highlightImage = pictureBox5.Image;
+                path = pictureBox5.ImageLocation;
+
             }
         }
 
@@ -568,6 +594,8 @@ namespace CSTool
             if (pictureBox6.Image != null)
             {
                 highlightImage = pictureBox6.Image;
+                path = pictureBox6.ImageLocation;
+
             }
         }
 
@@ -576,6 +604,8 @@ namespace CSTool
             if (pictureBox7.Image != null)
             {
                 highlightImage = pictureBox7.Image;
+                path = pictureBox7.ImageLocation;
+
             }
         }
 
@@ -584,6 +614,8 @@ namespace CSTool
             if (pictureBox8.Image != null)
             {
                 highlightImage = pictureBox8.Image;
+                path = pictureBox8.ImageLocation;
+
             }
         }
 
@@ -592,6 +624,8 @@ namespace CSTool
             if (pictureBox9.Image != null)
             {
                 highlightImage = pictureBox9.Image;
+                path = pictureBox9.ImageLocation;
+
             }
         }
 
@@ -600,6 +634,8 @@ namespace CSTool
             if (pictureBox10.Image != null)
             {
                 highlightImage = pictureBox10.Image;
+                path = pictureBox10.ImageLocation;
+
             }
         }
         //--------------------------------------------------------------------------------------------------------|
