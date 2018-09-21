@@ -367,6 +367,7 @@ namespace CSTool
                     {
                         imageDir[i].SizeMode = PictureBoxSizeMode.StretchImage;
                         imageDir[i].Image = image;
+                        imageDir[i].ImageLocation = path;
                         return;
                     }
                 }
@@ -531,7 +532,6 @@ namespace CSTool
             {
                 highlightImage = pictureBox2.Image;
                 path = pictureBox2.ImageLocation;
-
             }
         }
 
